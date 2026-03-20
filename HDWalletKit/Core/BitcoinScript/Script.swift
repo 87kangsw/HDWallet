@@ -454,7 +454,7 @@ extension Script {
     public static func buildPublicKeyHashOut(pubKeyHash: Data) -> Data {
         let values: [[UInt8]] = [
             [OpCode.OP_DUP.value, OpCode.OP_HASH160.value, UInt8(pubKeyHash.count)],
-            pubKeyHash.bytes,
+            [UInt8](pubKeyHash),
             [OpCode.OP_EQUALVERIFY.value,  OpCode.OP_CHECKSIG.value]
         ]
         return Data(values.reduce([], +))

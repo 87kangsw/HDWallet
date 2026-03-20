@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
   s.swift_version= '5'
   s.static_framework  = true
 
-  s.ios.deployment_target = '11.0'
-  s.osx.deployment_target = '10.11'
+  s.ios.deployment_target = '12.0'
+  s.osx.deployment_target = '10.13'
 
   s.module_name   = "HDWalletKit"
   s.source_files = 'HDWalletKit/**/*.{swift}'

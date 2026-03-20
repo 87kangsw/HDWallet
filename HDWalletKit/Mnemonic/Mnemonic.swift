@@ -48,7 +48,7 @@ public final class Mnemonic {
             fatalError("Nomalizing salt failed in \(self)")
         }
         
-        return Crypto.PBKDF2SHA512(password: password.bytes, salt: salt.bytes)
+        return Crypto.PBKDF2SHA512(password: [UInt8](password), salt: [UInt8](salt))
     }
 }
 

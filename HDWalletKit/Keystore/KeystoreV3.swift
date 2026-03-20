@@ -77,13 +77,13 @@ public class KeystoreV3: KeystoreInterface {
             mac.constantTimeComparisonTo(calculatedMac) else {return nil}
         let decryptionKey = derivedKey[0...15]
         guard let IV = Data.fromHex(keystoreParams.crypto.cipherparams.iv) else {return nil}
-        guard let aesCipher = try? AES(key: decryptionKey.bytes, blockMode: CTR(iv: IV.bytes), padding: .noPadding) else {return nil}
-        guard let decryptedPK:Array<UInt8> = try? aesCipher.decrypt(cipherText.bytes) else { return nil }
+        guard let aesCipher = try? AES(key: [UInt8](decryptionKey), blockMode: CTR(iv: [UInt8](IV)), padding: .noPadding) else {return nil}
+        guard let decryptedPK:Array<UInt8> = try? aesCipher.decrypt([UInt8](cipherText)) else { return nil }
         return Data(decryptedPK)
     }
     
     private func encryptData(passwordData: Data, salt: Data, length: Int, N: Int, R: Int, P: Int) -> Data? {
-        guard let deriver = try? Scrypt(password: passwordData.bytes, salt: salt.bytes, dkLen: length, N: N, r: R, p: P) else {return nil}
+        guard let deriver = try? Scrypt(password: [UInt8](passwordData), salt: [UInt8](salt), dkLen: length, N: N, r: R, p: P) else {return nil}
         guard let result = try? deriver.calculate() else {return nil}
         return Data(result)
     }
@@ -100,8 +100,8 @@ public class KeystoreV3: KeystoreInterface {
         let last16bytes = Data(derivedKey[(derivedKey.count - 16)...(derivedKey.count-1)])
         let encryptionKey = Data(derivedKey[0...15])
         let IV = Data.randomBytes(length: 16)
-        let aesCipher = try? AES(key: encryptionKey.bytes, blockMode: CTR(iv: IV.bytes), padding: .noPadding)
-        guard let encryptedKey = try aesCipher?.encrypt(data.bytes) else { throw KeystoreError.aesError }
+        let aesCipher = try? AES(key: [UInt8](encryptionKey), blockMode: CTR(iv: [UInt8](IV)), padding: .noPadding)
+        guard let encryptedKey = try aesCipher?.encrypt([UInt8](data)) else { throw KeystoreError.aesError }
         let encryptedKeyData = Data(encryptedKey)
         var dataForMAC = Data()
         dataForMAC.append(last16bytes)

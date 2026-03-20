@@ -12,7 +12,7 @@ public final class Crypto {
    public static func HMACSHA512(key: Data, data: Data) -> Data {
         let output: [UInt8]
         do {
-            output = try HMAC(key: key.bytes, variant: .sha512).authenticate(data.bytes)
+            output = try HMAC(key: [UInt8](key), variant: .sha512).authenticate([UInt8](data))
         } catch let error {
             fatalError("Error occured. Description: \(error.localizedDescription)")
         }
@@ -36,11 +36,11 @@ public final class Crypto {
     }
     
     public static func sha3keccak256(data:Data) -> Data {
-        return Data(SHA3(variant: .keccak256).calculate(for: data.bytes))
+        return Data(SHA3(variant: .keccak256).calculate(for: [UInt8](data)))
     }
     
     public static func hashSHA3_256(_ data: Data) -> Data {
-        return Data(CryptoSwift.SHA3(variant: .sha256).calculate(for: data.bytes))
+        return Data(CryptoSwift.SHA3(variant: .sha256).calculate(for: [UInt8](data)))
     }
     
     public static func sign(_ hash: Data, privateKey: Data) throws -> Data {
